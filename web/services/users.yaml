@@ -1,0 +1,171 @@
+components:
+  schemas:
+    AuthByPasswordRequest:
+      properties:
+        password:
+          title: Password
+          type: string
+        username:
+          title: Username
+          type: string
+      required:
+      - username
+      - password
+      title: AuthByPasswordRequest
+      type: object
+    AuthResponse:
+      properties:
+        ok:
+          title: Ok
+          type: boolean
+        token:
+          title: Token
+          type: string
+      required:
+      - ok
+      title: AuthResponse
+      type: object
+    Body_me_token_refresh_post:
+      properties:
+        token:
+          title: Token
+          type: string
+      required:
+      - token
+      title: Body_me_token_refresh_post
+      type: object
+    Filters:
+      properties:
+        ids:
+          items:
+            type: integer
+          title: Ids
+          type: array
+      title: Filters
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    Profile:
+      properties:
+        name:
+          title: Name
+          type: string
+        uid:
+          title: Uid
+          type: integer
+      required:
+      - uid
+      - name
+      title: Profile
+      type: object
+    Profiles:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Profile'
+          title: Items
+          type: array
+      required:
+      - items
+      title: Profiles
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            type: string
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+info:
+  title: FastAPI
+  version: 0.1.0
+openapi: 3.0.2
+paths:
+  /auth/password:
+    post:
+      operationId: authByPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthByPasswordRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Auth By Password
+  /token/refresh:
+    post:
+      operationId: me
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_me_token_refresh_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Me
+  /users:
+    post:
+      operationId: users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filters'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profiles'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Users

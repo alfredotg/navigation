@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+    web:
+        image: test/web
+        restart: always
+        build: ./web
+        ports:
+            - "127.0.0.1:8080:8080"
+        environment:
+            - USERS_API_URL=http://users:8080
+            - NAVIGATOR_API_URL=http://navigator:8080
+            - GUIDE_API_URL=http://guide:8080
+            - JWT_PUBLIC=LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFT1FTR01vS0YybTJqMnlITE9JVlBxL1p3bDM3ZgpLZXFrdDhDNzhNQ1Q2Q0VuWFJlU1VRd3A4SFpKYmhiSHNsL0pHYnU5bzVUb3dkQzNQcnFsS0tzbi93PT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+    
+    guide:
+        image: test/guide
+        restart: always 
+        build: ./guide
+    
+    navigator:
+        image: test/navigator
+        restart: always 
+        build: ./navigator
+        environment:
+            - DATABASE_URL=sqlite:////app/dev.db
+        command: >-
+            bash -c "alembic upgrade head &&
+            uvicorn main:app --host 0.0.0.0 --port 8080"
+    
+    users:
+        image: test/users
+        restart: always 
+        build: ./users
+        environment:
+            - DATABASE_URL=sqlite:////app/dev.db
+        command: >-
+            bash -c "alembic upgrade head &&
+            python seed.py &&
+            uvicorn main:app --host 0.0.0.0 --port 8080"
+

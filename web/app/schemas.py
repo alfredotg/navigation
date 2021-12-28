@@ -1,18 +1,23 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class Profile(BaseModel):
+    uid: int
+    name: str
+
+class Profiles(BaseModel):
+    items: List[Profile]
+
 class Point(BaseModel):
     uid: int
     name: str
 
 class Points(BaseModel):
     items: List[Point]
-
-class Filters(BaseModel):
-    ids: Optional[List[int]]
-
-class RouteFilters(Filters):
-    join_steps: bool
 
 class Route(BaseModel):
     uid: Optional[int]
@@ -21,15 +26,14 @@ class Route(BaseModel):
     distance: int
     steps: Optional[List[Point]]
 
-class SaveRouteRequest(BaseModel):
-    route: Route
-    steps: List[int]
+class MakeRouteResponse(BaseModel):
+    route: Optional[Route]
 
 class Routes(BaseModel):
     items: List[Route]
 
 class RoutesStatsByUser(BaseModel):
-    user_id: int
+    user: Profile
     count: int
     distance: int
 

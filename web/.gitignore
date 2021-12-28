@@ -1,0 +1,7 @@
+/.idea
+.env
+__pycache__
+openapi.yaml
+guide/
+users/
+navigator/
